@@ -14,9 +14,9 @@ function Title.draw()
     gr.setBackgroundColor(0.2,0,0)
     gr.setColor(0.7,0.7,0.7)
     gr.setFont(bigFont)
-    gr.printf('Game name here',0,screen_h/2,screen_w,'center')
+    gr.printf('WhamBamMania',0,screen_h/2,screen_w,'center')
     gr.setFont(smallFont)
-    gr.printf('Press any key',0,screen_h/2+50,screen_w,'center')
+    gr.printf('Press any key to start',0,screen_h/2+50,screen_w,'center')
 end
 
 function Title.keypressed(key)

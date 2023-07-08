@@ -17,7 +17,7 @@ function GameOver.draw()
     gr.printf('GameOver',0,screen_h/2,screen_w,'center')
     gr.setColor(0.7,0.7,0.7)
     gr.setFont(smallFont)
-    gr.printf('Press any key',0,screen_h/2+50,screen_w,'center')
+    gr.printf('Press any key to go to title screen',0,screen_h/2+50,screen_w,'center')
 end
 
 function GameOver.keypressed(key)

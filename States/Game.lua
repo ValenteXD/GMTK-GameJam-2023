@@ -1,19 +1,21 @@
 local Game = {}
-local pause,selected,tinyBot,bossBot
+local pause,selected,tinyBot,bossBot,timer
 function Game.load(info)
     selected = true
     pause = false
     tinyBot = require '../tinyBot'
     bossBot = require '../bossBot'
-    tinyBot.load()
     bossBot.load()
+    tinyBot.load(bossBot)
+    timer=0
     --load background image here
 end
 
 function Game.update(dt)
     if not pause then
-        tinyBot.update(dt)
-        bossBot.update(dt)
+        timer = timer+dt
+        tinyBot.update(dt,timer)
+        bossBot.update(dt,tinyBot)
     end
 end
 
@@ -60,12 +62,9 @@ function Game.keypressed(key)
             end
         end
     end
-
-    tinyBot.keypressed(key)
     bossBot.keypressed(key)
 end
 function Game.keyreleased(key)
-    tinyBot.keyreleased(key)
     bossBot.keyreleased(key)
 end
 return Game

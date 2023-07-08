@@ -1,7 +1,12 @@
 return function (side)
     local hand = {}
+    local tinyBot = {}
+    local heartsTable = {}
     hand.side = side
     function hand.load()
+        -- load in assets here
+        --hand image(remember to mirror according to hand side)
+        new_Heart = require 'Heart'
         hand.y=(screen_h/2)+30
         if hand.side=='left' then
             hand.x=(screen_w/2)-300
@@ -20,7 +25,8 @@ return function (side)
         hand.fakeOutCooldown = 0
         hand.fakeOut=false
     end
-    function hand.update(dt)
+    function hand.update(dt,tinyBot_param)
+        tinyBot = tinyBot_param
         -- I should probably have made a separate update for each state,
         --but I already put me through this hell, so might as well go all the way
         if hand.state=='neutral' then
@@ -33,13 +39,22 @@ return function (side)
             hand.fakeOut=false
         end
         if hand.state=='smash' then
-            hand.y=hand.y+hand.moveSpeed*3*dt
+            hand.y=hand.y+hand.moveSpeed*5*dt
             hand.y=math.min(hand.y,hand.ground)
+            if tinyBot.collide(hand.x,0,hand.width,screen_h) and math.random(10)==1 then
+                tinyBot.dash()
+            end
+            if tinyBot.collide(hand.x,hand.y,hand.width,hand.height) and hand.y<hand.ground then
+                tinyBot.damage()
+            end
             if hand.y>=hand.ground and hand.stuckTimer>0 then
                 hand.stuckTimer=hand.stuckTimer-dt
             end
             if hand.stuckTimer<=0 then
                 hand.stuckTimer=0
+                if math.random(3)==1 then
+                    table.insert(heartsTable,new_Heart(hand.x+(hand.width/2),hand.y+hand.height-45))
+                end
                 hand.state='smashRecovery'
             end
         end
@@ -51,6 +66,9 @@ return function (side)
             end
         end
         if hand.state=='fakeOutRecovery' then
+            if tinyBot.collide(hand.x,0,hand.width,screen_h) and math.random(10)==1 then
+                tinyBot.dash()
+            end
             if hand.stuckTimer>0 then
                 hand.stuckTimer=hand.stuckTimer-dt
                 hand.y=hand.y+hand.moveSpeed*2*dt
@@ -73,10 +91,23 @@ return function (side)
         elseif hand.fakeOutCooldown<0 then
             hand.fakeOutCooldown=0
         end
+        for i,v in pairs(heartsTable) do
+            if v~=nil then
+                heartsTable[i].update(dt,tinyBot)
+            end
+        end
     end
     function hand.draw()
-        gr.rectangle('fill',hand.x,hand.y,hand.width,hand.height)
-        gr.printf(tostring(hand.stuckTimer),0,0,screen_w,hand.side)
+        if hitbox then
+            gr.setColor(1,0,1)
+            gr.rectangle('fill',hand.x,hand.y,hand.width,hand.height)
+        end
+        --gr.printf(tostring(hand.stuckTimer),0,0,screen_w,hand.side)
+        for i,v in pairs(heartsTable) do
+            if v~=nil then
+                heartsTable[i].draw()
+            end
+        end
     end
     function hand.move(dt,direction)
         if hand.state == 'neutral' then
@@ -88,12 +119,14 @@ return function (side)
         end
     end
     function hand.smash()
-        if not hand.fakeOut then
-            hand.stuckTimer = 1
-            hand.state='smash'
-        else
-            hand.stuckTimer = 0.25
-            hand.state='fakeOutRecovery'
+        if hand.state == 'neutral' then
+            if not hand.fakeOut then
+                hand.stuckTimer = 1
+                hand.state='smash'
+            else
+                hand.stuckTimer = 0.25
+                hand.state='fakeOutRecovery'
+            end
         end
     end
     function hand.toggleFake()

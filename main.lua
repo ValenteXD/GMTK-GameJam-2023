@@ -2,8 +2,10 @@ gr = love.graphics
 kb = love.keyboard
 ms = love.mouse
 screen_w, screen_h = gr.getDimensions()
+hitbox=true
 States = require "States"
 function love.load()
+    math.randomseed(os.time())
     States.load()
 end
 function love.update(dt)
