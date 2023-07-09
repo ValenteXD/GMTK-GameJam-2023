@@ -1,6 +1,6 @@
 function love.conf(t)
-    t.window.width = 1080
+    t.window.width = 1280
     t.window.height = 720
-    t.console = true
+    t.console = false
     t.window.title = 'WhamBamMania'
   end

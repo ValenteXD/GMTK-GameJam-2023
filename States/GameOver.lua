@@ -3,7 +3,8 @@ local bigFont,smallFont
 function GameOver.load(info)
     bigFont=gr.newFont(30)
     smallFont=gr.newFont(20)
-    
+    gameOver_sfx=love.audio.newSource('/Assets/SFX/gameOver.wav','static')
+    gameOver_sfx:play()
 end
 
 function GameOver.update(dt)

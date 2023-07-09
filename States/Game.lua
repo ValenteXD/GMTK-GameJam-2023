@@ -1,5 +1,5 @@
 local Game = {}
-local pause,selected,tinyBot,bossBot,timer
+local pause,selected,tinyBot,bossBot,timer,bg_img
 function Game.load(info)
     selected = true
     pause = false
@@ -8,7 +8,7 @@ function Game.load(info)
     bossBot.load()
     tinyBot.load(bossBot)
     timer=0
-    --load background image here
+    bg_img=gr.newImage('/Assets/Background.png')
 end
 
 function Game.update(dt)
@@ -20,11 +20,10 @@ function Game.update(dt)
 end
 
 function Game.draw()
-    gr.setBackgroundColor(1,1,0)
-    --Background image should be here
-
-
+    --background
     gr.setColor(1,1,1)
+    gr.draw(bg_img,0,0)
+    --rest of stuff
     tinyBot.draw()
     bossBot.draw()
 

@@ -2,8 +2,10 @@ local bossBot = {}
 local leftHand, rightHand
 function bossBot.load()
     --load in assets here--
-    --heart image
-    --head image
+    bossBot.sprite=gr.newImage('/Assets/head_normal.png')
+    bossBot.spriteInFakeOut=gr.newImage('/Assets/head_fakeOut.png')
+    bossBot.lifebar_img=gr.newImage('/Assets/lifebar.png')
+    bossBot.fakeOutIcon=gr.newImage('/Assets/fakeOut.png')
     --head fakeOut image
     bossBot.alive=true
     bossBot.maxHeight=(screen_h/2)+20
@@ -47,11 +49,23 @@ function bossBot.update(dt,tinyBot)
     end
 end
 function bossBot.draw()
+    gr.setColor(1,1,1)
+    if rightHand.fakeOut then
+        gr.draw(bossBot.spriteInFakeOut,bossBot.x-(bossBot.width/2),bossBot.y-bossBot.height+10)
+    else
+        gr.draw(bossBot.sprite,bossBot.x-(bossBot.width/2),bossBot.y-bossBot.height+10)
+    end
     if hitbox then
-        gr.setColor(1,0,0)
+        gr.setColor(1,0,0,0.5)
         gr.rectangle('fill',bossBot.x-(bossBot.width/2),bossBot.y-bossBot.height+10,bossBot.height,bossBot.width)
     end
+    gr.setColor(1,1,1)
+    gr.draw(bossBot.lifebar_img,0,0,0,0.8,1)-- LEMBRANDO Q ESSA ESCALA FOI MUDADA ENTÃO ALGO PD DAR ERRADO
+    gr.setColor(1,0,0)
     gr.rectangle('fill',20,20,bossBot.health,20)
+    gr.setColor(1,1,1)
+    gr.draw(bossBot.fakeOutIcon,20,300)
+    gr.rectangle('fill',20,300,50,leftHand.fakeOutCooldown*10)
     leftHand.draw()
     rightHand.draw()
 end

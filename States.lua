@@ -1,10 +1,10 @@
 local States = {}
 
 function States.load()
-    States['title']= require './States/Title'
-    States['game']= require './States/Game'
-    States['gameOver']= require './States/GameOver'
-    States['victory']= require './States/Victory'
+    States['title']= require '/States/Title'
+    States['game']= require '/States/Game'
+    States['gameOver']= require '/States/GameOver'
+    States['victory']= require '/States/Victory'
     States.active="title"
     States[States.active].load()
 end

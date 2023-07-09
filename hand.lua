@@ -2,10 +2,14 @@ return function (side)
     local hand = {}
     local tinyBot = {}
     local heartsTable = {}
+    local heart_img
     hand.side = side
     function hand.load()
         -- load in assets here
         --hand image(remember to mirror according to hand side)
+        hand.sprite=gr.newImage('/Assets/hand.png')
+        heart_img=gr.newImage('/Assets/heart_full.png')
+        hand.smash_sfx=love.audio.newSource('/Assets/SFX/smash.wav','static')
         new_Heart = require 'Heart'
         hand.y=(screen_h/2)+30
         if hand.side=='left' then
@@ -24,6 +28,11 @@ return function (side)
         hand.stuckTimer = 0
         hand.fakeOutCooldown = 0
         hand.fakeOut=false
+        if hand.side=='left' then
+            hand.flip = 1
+        else
+            hand.flip = -1
+        end
     end
     function hand.update(dt,tinyBot_param)
         tinyBot = tinyBot_param
@@ -44,6 +53,9 @@ return function (side)
             if tinyBot.collide(hand.x,0,hand.width,screen_h) and math.random(10)==1 then
                 tinyBot.dash()
             end
+            if hand.y<hand.ground and hand.y>=hand.ground-20 then
+                hand.smash_sfx:play()
+            end
             if tinyBot.collide(hand.x,hand.y,hand.width,hand.height) and hand.y<hand.ground then
                 tinyBot.damage()
             end
@@ -53,7 +65,7 @@ return function (side)
             if hand.stuckTimer<=0 then
                 hand.stuckTimer=0
                 if math.random(3)==1 then
-                    table.insert(heartsTable,new_Heart(hand.x+(hand.width/2),hand.y+hand.height-45))
+                    table.insert(heartsTable,new_Heart(hand.x+(hand.width/2),hand.y+hand.height-45,heart_img))
                 end
                 hand.state='smashRecovery'
             end
@@ -99,9 +111,10 @@ return function (side)
     end
     function hand.draw()
         if hitbox then
-            gr.setColor(1,0,1)
+            gr.setColor(1,0,1,0.5)
             gr.rectangle('fill',hand.x,hand.y,hand.width,hand.height)
         end
+        gr.draw(hand.sprite,hand.x+hand.width/2,hand.y,0,hand.flip,1,hand.sprite:getWidth()/2)
         --gr.printf(tostring(hand.stuckTimer),0,0,screen_w,hand.side)
         for i,v in pairs(heartsTable) do
             if v~=nil then

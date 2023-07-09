@@ -4,6 +4,8 @@ function Title.load(info)
     bigFont=gr.newFont(30)
     smallFont=gr.newFont(20)
     time = info
+    victory_sfx=love.audio.newSource('/Assets/SFX/victory.wav','static')
+    victory_sfx:play()
 end
 
 function Title.update(dt)
